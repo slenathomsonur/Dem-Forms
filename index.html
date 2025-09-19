@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dem Forms - Custom Form Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f6f8fa 0%, #eaeef2 100%);
+            color: #24292e;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: #ffffff;
+            border-bottom: 1px solid #e1e4e8;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #0366d6;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .logo i {
+            font-size: 1.8rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: #586069;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: #0366d6;
+            color: white;
+        }
+        
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+        
+        .sidebar {
+            width: 280px;
+            background: #f6f8fa;
+            border-right: 1px solid #e1e4e8;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .sidebar-title {
+            color: #0366d6;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .question-types {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .question-type {
+            background: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 12px;
+            cursor: move;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+        
+        .question-type:hover {
+            border-color: #0366d6;
+            box-shadow: 0 2px 5px rgba(3, 102, 214, 0.1);
+        }
+        
+        .question-type i {
+            color: #0366d6;
+            font-size: 1.2rem;
+        }
+        
+        .settings-panel {
+            margin-top: 30px;
+        }
+        
+        .setting-group {
+            margin-bottom: 20px;
+        }
+        
+        .setting-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #24292e;
+        }
+        
+        .setting-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        
+        .setting-input:focus {
+            outline: none;
+            border-color: #0366d6;
+            box-shadow: 0 0 0 3px rgba(3, 102, 214, 0.3);
+        }
+        
+        .form-container {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .form-paper {
+            background: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 10px;
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f6f8fa;
+        }
+        
+        .form-title {
+            font-size: 2rem;
+            color: #24292e;
+            margin-bottom: 10px;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .form-title:focus {
+            outline: none;
+            background: #f6f8fa;
+        }
+        
+        .form-description {
+            color: #586069;
+            border: none;
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            resize: none;
+            transition: all 0.3s;
+        }
+        
+        .form-description:focus {
+            outline: none;
+            background: #f6f8fa;
+        }
+        
+        .questions-container {
+            margin-bottom: 30px;
+        }
+        
+        .question {
+            background: #ffffff;
+            border: 1px solid #e1e4e8;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .question-title {
+            font-size: 1.2rem;
+            color: #24292e;
+            border: none;
+            width: 80%;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .question-title:focus {
+            outline: none;
+            background: #f6f8fa;
+        }
+        
+        .question-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .question-action {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            border-radius: 4px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: #586069;
+            transition: all 0.3s;
+        }
+        
+        .question-action:hover {
+            background: #0366d6;
+            color: white;
+            border-color: #0366d6;
+        }
+        
+        .question-body {
+            margin-bottom: 15px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .option input[type="text"] {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+        
+        .option input[type="text"]:focus {
+            outline: none;
+            border-color: #0366d6;
+        }
+        
+        .add-option {
+            color: #0366d6;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+        
+        .add-option:hover {
+            background: #f6f8fa;
+        }
+        
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .form-action-btn {
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .preview-btn {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            color: #586069;
+        }
+        
+        .preview-btn:hover {
+            background: #e1e4e8;
+        }
+        
+        .submit-btn {
+            background: #2ea44f;
+            border: 1px solid #2c974b;
+            color: white;
+        }
+        
+        .submit-btn:hover {
+            background: #2c974b;
+        }
+        
+        .save-btn {
+            background: #0366d6;
+            border: 1px solid #0366d6;
+            color: white;
+        }
+        
+        .save-btn:hover {
+            background: #025cc1;
+        }
+        
+        .footer {
+            background: #ffffff;
+            border-top: 1px solid #e1e4e8;
+            padding: 15px 20px;
+            text-align: center;
+            color: #586069;
+            font-size: 0.9rem;
+        }
+        
+        /* Preview Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: #ffffff;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            position: relative;
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #586069;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e1e4e8;
+            }
+            
+            .question-types {
+                flex-direction: row;
+                flex-wrap: wrap;
+            }
+            
+            .question-type {
+                flex: 1;
+                min-width: 140px;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .form-action-btn {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            <i class="fab fa-github"></i>
+            <span>Dem Forms</span>
+        </div>
+        <div class="nav-links">
+            <a href="#" class="nav-link active"><i class="fas fa-plus-circle"></i> Create</a>
+            <a href="#" class="nav-link"><i class="fas fa-history"></i> My Forms</a>
+            <a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="sidebar">
+            <h3 class="sidebar-title"><i class="fas fa-question-circle"></i> Question Types</h3>
+            <div class="question-types">
+                <div class="question-type" draggable="true" data-type="short-text">
+                    <i class="fas fa-font"></i>
+                    <span>Short Text</span>
+                </div>
+                <div class="question-type" draggable="true" data-type="long-text">
+                    <i class="fas fa-align-left"></i>
+                    <span>Long Text</span>
+                </div>
+                <div class="question-type" draggable="true" data-type="multiple-choice">
+                    <i class="fas fa-dot-circle"></i>
+                    <span>Multiple Choice</span>
+                </div>
+                <div class="question-type" draggable="true" data-type="checkbox">
+                    <i class="fas fa-check-square"></i>
+                    <span>Checkboxes</span>
+                </div>
+                <div class="question-type" draggable="true" data-type="dropdown">
+                    <i class="fas fa-caret-down"></i>
+                    <span>Dropdown</span>
+                </div>
+            </div>
+            
+            <div class="settings-panel">
+                <h3 class="sidebar-title"><i class="fas fa-cog"></i> Form Settings</h3>
+                
+                <div class="setting-group">
+                    <label class="setting-label">Form Title</label>
+                    <input type="text" class="setting-input" id="form-title-input" value="My Custom Form">
+                </div>
+                
+                <div class="setting-group">
+                    <label class="setting-label">Form Description</label>
+                    <textarea class="setting-input" id="form-description-input" rows="3">Please fill out this form</textarea>
+                </div>
+                
+                <div class="setting-group">
+                    <label class="setting-label">Theme Color</label>
+                    <select class="setting-input" id="theme-color-select">
+                        <option value="#0366d6">GitHub Blue</option>
+                        <option value="#2ea44f">Green</option>
+                        <option value="#cb2431">Red</option>
+                        <option value="#f57c00">Orange</option>
+                        <option value="#6f42c1">Purple</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <label class="setting-label">Button Text</label>
+                    <input type="text" class="setting-input" id="submit-button-text" value="Submit Form">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-container">
+            <div class="form-paper" id="form-paper">
+                <div class="form-header">
+                    <input type="text" class="form-title" id="form-title" placeholder="Form Title" value="My Custom Form">
+                    <textarea class="form-description" id="form-description" rows="2" placeholder="Form Description">Please fill out this form</textarea>
+                </div>
+                
+                <div class="questions-container" id="questions-container">
+                    <!-- Questions will be added here dynamically -->
+                </div>
+                
+                <div class="form-actions">
+                    <button class="form-action-btn preview-btn" id="preview-btn">
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button class="form-action-btn save-btn" id="save-btn">
+                        <i class="fas fa-save"></i> Save Form
+                    </button>
+                    <button class="form-action-btn submit-btn" id="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Dem Forms - A GitHub-inspired form builder for developers | Created with <i class="fas fa-heart" style="color: #ea4aaa;"></i> and JavaScript</p>
+    </div>
+    
+    <!-- Preview Modal -->
+    <div class="modal" id="preview-modal">
+        <div class="modal-content">
+            <span class="close-modal" id="close-modal">&times;</span>
+            <h2>Form Preview</h2>
+            <p>This is how your form will appear to respondents.</p>
+            
+            <div class="form-paper">
+                <div class="form-header">
+                    <h2 id="preview-form-title">Form Title</h2>
+                    <p id="preview-form-description">Form description goes here</p>
+                </div>
+                
+                <div class="questions-container" id="preview-questions-container">
+                    <!-- Preview questions will be added here -->
+                </div>
+                
+                <div class="form-actions">
+                    <button class="form-action-btn submit-btn" id="preview-submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const questionsContainer = document.getElementById('questions-container');
+        const previewBtn = document.getElementById('preview-btn');
+        const saveBtn = document.getElementById('save-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const previewModal = document.getElementById('preview-modal');
+        const closeModal = document.getElementById('close-modal');
+        const formTitle = document.getElementById('form-title');
+        const formDescription = document.getElementById('form-description');
+        const formTitleInput = document.getElementById('form-title-input');
+        const formDescriptionInput = document.getElementById('form-description-input');
+        const themeColorSelect = document.getElementById('theme-color-select');
+        const submitButtonText = document.getElementById('submit-button-text');
+        const previewFormTitle = document.getElementById('preview-form-title');
+        const previewFormDescription = document.getElementById('preview-form-description');
+        const previewQuestionsContainer = document.getElementById('preview-questions-container');
+        const previewSubmitBtn = document.getElementById('preview-submit-btn');
+        
+        // Form data
+        let formData = {
+            title: "My Custom Form",
+            description: "Please fill out this form",
+            themeColor: "#0366d6",
+            submitText: "Submit Form",
+            questions: []
+        };
+        
+        // Initialize the form builder
+        function initFormBuilder() {
+            // Set up event listeners for question types (drag and drop)
+            const questionTypes = document.querySelectorAll('.question-type');
+            questionTypes.forEach(type => {
+                type.addEventListener('dragstart', handleDragStart);
+            });
+            
+            questionsContainer.addEventListener('dragover', handleDragOver);
+            questionsContainer.addEventListener('drop', handleDrop);
+            
+            // Set up event listeners for settings
+            formTitleInput.addEventListener('input', updateFormTitle);
+            formDescriptionInput.addEventListener('input', updateFormDescription);
+            themeColorSelect.addEventListener('change', updateThemeColor);
+            submitButtonText.addEventListener('input', updateSubmitButtonText);
+            
+            formTitle.addEventListener('input', updateFormTitleFromEditor);
+            formDescription.addEventListener('input', updateFormDescriptionFromEditor);
+            
+            // Set up preview modal
+            previewBtn.addEventListener('click', showPreview);
+            closeModal.addEventListener('click', hidePreview);
+            
+            // Set up save button
+            saveBtn.addEventListener('click', saveForm);
+            
+            // Set up submit button
+            submitBtn.addEventListener('click', submitForm);
+            previewSubmitBtn.addEventListener('click', submitPreviewForm);
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', (e) => {
+                if (e.target === previewModal) {
+                    hidePreview();
+                }
+            });
+            
+            // Load saved form if available
+            loadSavedForm();
+        }
+        
+        // Drag and drop functions
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.getAttribute('data-type'));
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            const questionType = e.dataTransfer.getData('text/plain');
+            addNewQuestion(questionType);
+        }
+        
+        // Add a new question based on type
+        function addNewQuestion(type) {
+            const questionId = Date.now(); // Unique ID for the question
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question';
+            questionDiv.setAttribute('data-type', type);
+            questionDiv.setAttribute('data-id', questionId);
+            
+            let questionBody = '';
+            
+            switch(type) {
+                case 'short-text':
+                    questionBody = `
+                        <input type="text" placeholder="Short answer text" disabled style="width: 100%; padding: 10px; border: none; border-bottom: 1px dashed #e1e4e8;">
+                    `;
+                    break;
+                case 'long-text':
+                    questionBody = `
+                        <textarea placeholder="Long answer text" disabled style="width: 100%; padding: 10px; border: none; border-bottom: 1px dashed #e1e4e8; height: 80px; resize: vertical;"></textarea>
+                    `;
+                    break;
+                case 'multiple-choice':
+                    questionBody = `
+                        <div class="option">
+                            <input type="radio" disabled>
+                            <input type="text" value="Option 1" class="option-input">
+                            <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="option">
+                            <input type="radio" disabled>
+                            <input type="text" value="Option 2" class="option-input">
+                            <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                        </div>
+                        <button class="add-option"><i class="fas fa-plus"></i> Add option</button>
+                    `;
+                    break;
+                case 'checkbox':
+                    questionBody = `
+                        <div class="option">
+                            <input type="checkbox" disabled>
+                            <input type="text" value="Option 1" class="option-input">
+                            <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="option">
+                            <input type="checkbox" disabled>
+                            <input type="text" value="Option 2" class="option-input">
+                            <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                        </div>
+                        <button class="add-option"><i class="fas fa-plus"></i> Add option</button>
+                    `;
+                    break;
+                case 'dropdown':
+                    questionBody = `
+                        <div class="option">
+                            <span>1.</span>
+                            <input type="text" value="Option 1" class="option-input">
+                            <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                        </div>
+                        <div class="option">
+                            <span>2.</span>
+                            <input type="text" value="Option 2" class="option-input">
+                            <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                        </div>
+                        <button class="add-option"><i class="fas fa-plus"></i> Add option</button>
+                        <select disabled style="margin-top: 15px; padding: 10px; width: 100%; border: 1px dashed #e1e4e8;">
+                            <option>Select an option</option>
+                        </select>
+                    `;
+                    break;
+            }
+            
+            questionDiv.innerHTML = `
+                <div class="question-header">
+                    <input type="text" class="question-title" value="New Question" placeholder="Question title">
+                    <div class="question-actions">
+                        <button class="question-action" title="Delete question"><i class="fas fa-trash"></i></button>
+                        <button class="question-action" title="Duplicate question"><i class="fas fa-copy"></i></button>
+                    </div>
+                </div>
+                <div class="question-body">
+                    ${questionBody}
+                </div>
+            `;
+            
+            questionsContainer.appendChild(questionDiv);
+            
+            // Add event listeners to the new question
+            const addOptionBtn = questionDiv.querySelector('.add-option');
+            addOptionBtn.addEventListener('click', addOption);
+            
+            const deleteBtn = questionDiv.querySelector('.question-action:first-child');
+            deleteBtn.addEventListener('click', deleteQuestion);
+            
+            const duplicateBtn = questionDiv.querySelector('.question-action:last-child');
+            duplicateBtn.addEventListener('click', duplicateQuestion);
+            
+            const removeOptionBtns = questionDiv.querySelectorAll('.remove-option');
+            removeOptionBtns.forEach(btn => {
+                btn.addEventListener('click', removeOption);
+            });
+            
+            const optionInputs = questionDiv.querySelectorAll('.option-input');
+            optionInputs.forEach(input => {
+                input.addEventListener('input', updateOptionText);
+            });
+            
+            const questionTitle = questionDiv.querySelector('.question-title');
+            questionTitle.addEventListener('input', updateQuestionTitle);
+            
+            // Add to form data
+            formData.questions.push({
+                id: questionId,
+                type: type,
+                title: "New Question",
+                options: type === 'multiple-choice' || type === 'checkbox' || type === 'dropdown' ? 
+                    ["Option 1", "Option 2"] : []
+            });
+        }
+        
+        // Add a new option to a question
+        function addOption(e) {
+            const question = e.target.closest('.question');
+            const questionBody = question.querySelector('.question-body');
+            const questionType = question.getAttribute('data-type');
+            const questionId = question.getAttribute('data-id');
+            
+            const optionDiv = document.createElement('div');
+            optionDiv.className = 'option';
+            
+            if (questionType === 'multiple-choice') {
+                optionDiv.innerHTML = `
+                    <input type="radio" disabled>
+                    <input type="text" value="New Option" class="option-input">
+                    <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                `;
+            } else if (questionType === 'checkbox') {
+                optionDiv.innerHTML = `
+                    <input type="checkbox" disabled>
+                    <input type="text" value="New Option" class="option-input">
+                    <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                `;
+            } else if (questionType === 'dropdown') {
+                optionDiv.innerHTML = `
+                    <span>${questionBody.querySelectorAll('.option').length + 1}.</span>
+                    <input type="text" value="New Option" class="option-input">
+                    <button class="question-action remove-option"><i class="fas fa-times"></i></button>
+                `;
+            }
+            
+            questionBody.insertBefore(optionDiv, e.target);
+            
+            // Add event listeners
+            const removeOptionBtn = optionDiv.querySelector('.remove-option');
+            removeOptionBtn.addEventListener('click', removeOption);
+            
+            const optionInput = optionDiv.querySelector('.option-input');
+            optionInput.addEventListener('input', updateOptionText);
+            
+            // Update form data
+            const questionData = formData.questions.find(q => q.id == questionId);
+            if (questionData) {
+                questionData.options.push("New Option");
+            }
+        }
+        
+        // Remove an option from a question
+        function removeOption(e) {
+            const option = e.target.closest('.option');
+            const question = option.closest('.question');
+            const questionId = question.getAttribute('data-id');
+            
+            option.remove();
+            
+            // Update form data
+            const questionData = formData.questions.find(q => q.id == questionId);
+            if (questionData) {
+                // For simplicity, we'll just rebuild the options array
+                const options = [];
+                question.querySelectorAll('.option-input').forEach(input => {
+                    options.push(input.value);
+                });
+                questionData.options = options;
+            }
+        }
+        
+        // Update option text in form data
+        function updateOptionText(e) {
+            const option = e.target.closest('.option');
+            const question = option.closest('.question');
+            const questionId = question.getAttribute('data-id');
+            const optionIndex = Array.from(option.parentElement.querySelectorAll('.option')).indexOf(option);
+            
+            // Update form data
+            const questionData = formData.questions.find(q => q.id == questionId);
+            if (questionData && questionData.options[optionIndex] !== undefined) {
+                questionData.options[optionIndex] = e.target.value;
+            }
+        }
+        
+        // Update question title in form data
+        function updateQuestionTitle(e) {
+            const question = e.target.closest('.question');
+            const questionId = question.getAttribute('data-id');
+            
+            // Update form data
+            const questionData = formData.questions.find(q => q.id == questionId);
+            if (questionData) {
+                questionData.title = e.target.value;
+            }
+        }
+        
+        // Delete a question
+        function deleteQuestion(e) {
+            const question = e.target.closest('.question');
+            const questionId = question.getAttribute('data-id');
+            
+            question.remove();
+            
+            // Update form data
+            formData.questions = formData.questions.filter(q => q.id != questionId);
+        }
+        
+        // Duplicate a question
+        function duplicateQuestion(e) {
+            const question = e.target.closest('.question');
+            const questionType = question.getAttribute('data-type');
+            
+            addNewQuestion(questionType);
+            
+            // Copy the content of the question to the new one
+            const newQuestion = questionsContainer.lastChild;
+            const questionTitle = question.querySelector('.question-title').value;
+            newQuestion.querySelector('.question-title').value = questionTitle + " (Copy)";
+            
+            // Update form data for the new question
+            const newQuestionId = newQuestion.getAttribute('data-id');
+            const newQuestionData = formData.questions.find(q => q.id == newQuestionId);
+            if (newQuestionData) {
+                newQuestionData.title = questionTitle + " (Copy)";
+                
+                // Copy options if available
+                if (questionType === 'multiple-choice' || questionType === 'checkbox' || questionType === 'dropdown') {
+                    const options = [];
+                    question.querySelectorAll('.option-input').forEach(input => {
+                        options.push(input.value);
+                    });
+                    newQuestionData.options = [...options];
+                    
+                    // Update the UI for options
+                    const newOptions = newQuestion.querySelectorAll('.option-input');
+                    newOptions.forEach((input, index) => {
+                        if (options[index]) {
+                            input.value = options[index];
+                        }
+                    });
+                }
+            }
+        }
+        
+        // Update form title from settings panel
+        function updateFormTitle(e) {
+            formData.title = e.target.value;
+            formTitle.value = e.target.value;
+        }
+        
+        // Update form title from editor
+        function updateFormTitleFromEditor(e) {
+            formData.title = e.target.value;
+            formTitleInput.value = e.target.value;
+        }
+        
+        // Update form description from settings panel
+        function updateFormDescription(e) {
+            formData.description = e.target.value;
+            formDescription.value = e.target.value;
+        }
+        
+        // Update form description from editor
+        function updateFormDescriptionFromEditor(e) {
+            formData.description = e.target.value;
+            formDescriptionInput.value = e.target.value;
+        }
+        
+        // Update theme color
+        function updateThemeColor(e) {
+            formData.themeColor = e.target.value;
+            document.documentElement.style.setProperty('--primary-color', e.target.value);
+            
+            // Update button colors
+            const primaryBtn = document.querySelector('.save-btn');
+            primaryBtn.style.backgroundColor = e.target.value;
+            primaryBtn.style.borderColor = e.target.value;
+        }
+        
+        // Update submit button text
+        function updateSubmitButtonText(e) {
+            formData.submitText = e.target.value;
+            submitBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${e.target.value}`;
+        }
+        
+        // Show preview modal
+        function showPreview() {
+            // Update preview content
+            previewFormTitle.textContent = formData.title;
+            previewFormDescription.textContent = formData.description;
+            previewSubmitBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${formData.submitText}`;
+            
+            // Clear previous preview questions
+            previewQuestionsContainer.innerHTML = '';
+            
+            // Add questions to preview
+            formData.questions.forEach(question => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                
+                let questionBody = '';
+                
+                switch(question.type) {
+                    case 'short-text':
+                        questionBody = `
+                            <input type="text" placeholder="Your answer" style="width: 100%; padding: 10px; border: 1px solid #e1e4e8; border-radius: 6px;">
+                        `;
+                        break;
+                    case 'long-text':
+                        questionBody = `
+                            <textarea placeholder="Your answer" style="width: 100%; padding: 10px; border: 1px solid #e1e4e8; border-radius: 6px; height: 80px; resize: vertical;"></textarea>
+                        `;
+                        break;
+                    case 'multiple-choice':
+                        questionBody = question.options.map(option => `
+                            <div class="option">
+                                <input type="radio" name="question-${question.id}" id="option-${question.id}-${option}">
+                                <label for="option-${question.id}-${option}">${option}</label>
+                            </div>
+                        `).join('');
+                        break;
+                    case 'checkbox':
+                        questionBody = question.options.map(option => `
+                            <div class="option">
+                                <input type="checkbox" name="question-${question.id}" id="option-${question.id}-${option}">
+                                <label for="option-${question.id}-${option}">${option}</label>
+                            </div>
+                        `).join('');
+                        break;
+                    case 'dropdown':
+                        questionBody = `
+                            <select style="width: 100%; padding: 10px; border: 1px solid #e1e4e8; border-radius: 6px;">
+                                <option value="">Select an option</option>
+                                ${question.options.map(option => `
+                                    <option value="${option}">${option}</option>
+                                `).join('')}
+                            </select>
+                        `;
+                        break;
+                }
+                
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <h3>${question.title}</h3>
+                    </div>
+                    <div class="question-body">
+                        ${questionBody}
+                    </div>
+                `;
+                
+                previewQuestionsContainer.appendChild(questionDiv);
+            });
+            
+            previewModal.style.display = 'flex';
+        }
+        
+        // Hide preview modal
+        function hidePreview() {
+            previewModal.style.display = 'none';
+        }
+        
+        // Save form
+        function saveForm() {
+            localStorage.setItem('demFormData', JSON.stringify(formData));
+            alert('Form saved successfully!');
+        }
+        
+        // Load saved form
+        function loadSavedForm() {
+            const savedFormData = localStorage.getItem('demFormData');
+            if (savedFormData) {
+                formData = JSON.parse(savedFormData);
+                
+                // Update form title and description
+                formTitle.value = formData.title;
+                formDescription.value = formData.description;
+                formTitleInput.value = formData.title;
+                formDescriptionInput.value = formData.description;
+                themeColorSelect.value = formData.themeColor;
+                submitButtonText.value = formData.submitText;
+                
+                // Update theme color
+                document.documentElement.style.setProperty('--primary-color', formData.themeColor);
+                const primaryBtn = document.querySelector('.save-btn');
+                primaryBtn.style.backgroundColor = formData.themeColor;
+                primaryBtn.style.borderColor = formData.themeColor;
+                
+                // Update submit button text
+                submitBtn.innerHTML = `<i class="fas fa-paper-plane"></i> ${formData.submitText}`;
+                
+                // Recreate questions
+                formData.questions.forEach(question => {
+                    addNewQuestion(question.type);
+                    const questionElement = questionsContainer.lastChild;
+                    
+                    // Set question title
+                    questionElement.querySelector('.question-title').value = question.title;
+                    
+                    // Set options if available
+                    if (question.options && question.options.length > 0) {
+                        const options = questionElement.querySelectorAll('.option-input');
+                        options.forEach((input, index) => {
+                            if (question.options[index]) {
+                                input.value = question.options[index];
+                            }
+                        });
+                    }
+                });
+            }
+        }
+        
+        // Submit form
+        function submitForm() {
+            alert('Form submitted! In a real application, this would send your form data to a server.');
+        }
+        
+        // Submit preview form
+        function submitPreviewForm() {
+            alert('Preview form submitted! In a real application, this would validate and send the form data.');
+        }
+        
+        // Initialize the form builder when the page loads
+        document.addEventListener('DOMContentLoaded', initFormBuilder);
+    </script>
+</body>
+</html>
